@@ -1,0 +1,74 @@
+---
+title: 'Optimizing winter wheat multi-trait selection for wheat-soybean double crop systems using linear genomic selection index'
+author:
+  - name: Lucas Berger Munaro
+  - name: Jessica E. Rutkoski
+format: html
+---
+
+## Clean workspace
+
+```{r}
+#| include: false
+rm(list=objects()) # clean objects from workspace
+start.time <- Sys.time()
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| results: hide
+library(tidyverse) # R packages for data science
+library(janitor) # Simple Tools for Examining and Cleaning Dirty Data
+```
+
+```{r}
+pheno_raw_w <- #raw data wide format
+  read.csv('data/IL_22-23YT_02.27.24.csv', skip = 3) |> 
+  remove_empty(which = c('cols')) |>#remove columns entirely empty
+  clean_names() |> # clean names
+  # replace location name
+  mutate(study_name = str_replace(study_name,'YT_Stj_22','YT_Addie_22'),
+         location_name = str_replace(location_name,'St. Jacob Township, IL','Addieville, IL')) |>
+  # select variables
+  dplyr::select(study_name, study_year, location_name, germplasm_name, observation_unit_name,
+                replicate, block_number, plot_number, row_number, col_number, entry_type,
+                grain_yield_kg_ha_co_321_0001218, grain_test_weight_g_l_co_321_0001210,
+                heading_time_julian_date_jd_co_321_0001233, plant_height_cm_co_321_0001301,
+                maturity_time_spike_estimation_julian_date_jd_co_321_0501101) |>
+  # arrange data by study, row, and col
+  arrange(study_name,row_number,col_number) |>
+  # convert to factors
+  mutate_at(vars(study_name:entry_type),as.factor) |>
+  # convert to numeric
+  mutate_at(vars(grain_yield_kg_ha_co_321_0001218:
+                   maturity_time_spike_estimation_julian_date_jd_co_321_0501101),
+            as.numeric) |>
+  # replace 0 by NA for response variables
+  mutate_at(vars(grain_yield_kg_ha_co_321_0001218:
+                   maturity_time_spike_estimation_julian_date_jd_co_321_0501101),
+            ~ifelse(.<=0,NA,.)) |>
+  glimpse()
+```
+```{r}
+pheno_raw_l <- pheno_raw_w |> #raw data long format
+  pivot_longer(cols = grain_yield_kg_ha_co_321_0001218:
+                 maturity_time_spike_estimation_julian_date_jd_co_321_0501101,
+               names_to = 'trait', #traits
+               values_to = 'value', #values
+               values_drop_na = T) |>
+  mutate(trait=as.factor(trait)) |>
+  arrange(study_name, trait, as.numeric(row_number), as.numeric(col_number)) |>
+  glimpse()
+```
+
+
+```{r}
+pheno_raw_l |>
+  ggplot(aes(x=study_name, y=value)) +
+  geom_boxplot() +
+  facet_wrap(~trait, scales = "free", ncol = 1)
+```
+
+
+
