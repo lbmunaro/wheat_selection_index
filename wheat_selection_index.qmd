@@ -20,6 +20,7 @@ start.time <- Sys.time()
 #| results: hide
 library(tidyverse) # R packages for data science
 library(janitor) # Simple Tools for Examining and Cleaning Dirty Data
+library(asreml) # ASReml-R package
 ```
 
 ```{r}
@@ -54,11 +55,19 @@ pheno_raw_w <- #raw data wide format
 pheno_raw_l <- pheno_raw_w |> #raw data long format
   pivot_longer(cols = grain_yield_kg_ha_co_321_0001218:
                  maturity_time_spike_estimation_julian_date_jd_co_321_0501101,
-               names_to = 'trait', #traits
-               values_to = 'value', #values
-               values_drop_na = T) |>
+               names_to = 'trait', values_to = 'value', values_drop_na = F) |>
   mutate(trait=as.factor(trait)) |>
+  
   arrange(study_name, trait, as.numeric(row_number), as.numeric(col_number)) |>
+  glimpse()
+```
+
+```{r}
+pheno_raw_l <- pheno_raw_l |>
+  group_by(study_name, trait) |>
+  filter(!is.na(mean(value, na.rm = TRUE))) |>
+  filter(!location_name %in% c("Blacksburg, VA", "Warsaw, VA")) |>
+  ungroup() |>
   glimpse()
 ```
 
@@ -69,6 +78,88 @@ pheno_raw_l |>
   geom_boxplot() +
   facet_wrap(~trait, scales = "free", ncol = 1)
 ```
+
+## Spatial analysis
+
+```{r}
+asreml.options(gammaPar= T,
+               maxit=50,
+               pworkspace="1gb")
+```
+
+```{r}
+dat <- pheno_raw_l |>
+  filter(study_name == "YT_Urb_23",
+         trait == "plant_height_cm_co_321_0001301") |>
+  glimpse()
+```
+
+```{r}
+pheno_raw_l |>
+  ggplot(aes(x=col_number,y=row_number, fill=value)) +
+  geom_tile() +
+  facet_wrap(~study_name+trait, scales = 'free')
+```
+
+
+### Single trial BLUP model
+
+https://www.youtube.com/watch?v=Ykb6dwLk_Xw
+
+```{r}
+mod.blup_single_trial <- function(dat) {
+  mod <- asreml(value~1+block_number,
+                random = ~idv(units) + germplasm_name,
+                residual = ~ar1v(row_number):ar1(col_number),
+                data=dat)
+  # Update model
+  mod <- update(mod)
+  # Blups
+  blups<- predict(mod, classify='germplasm_name',
+                  ignore=c('(Intercept)','block_number'))$pvals
+  # Prediction error variance
+  pev<- blups[,'std.error']^2
+  # Genetic variance
+  Vg<- summary(mod)$varcomp['germplasm_name','component']
+  # Reliability for each gen
+  rel<- 1-(pev/Vg)
+  # Mean reliability
+  m_rel<- mean(rel)
+  # Result
+  res<- data.frame(m_rel=m_rel)
+  # Result that will be printed
+  return(res)
+}
+```
+
+
+
+```{r}
+reliability <- pheno_raw_l |>
+  group_by(study_name, trait) |>
+  nest() |>
+  mutate(r2=map(data,~mod.blup_single_trial(.x))) |>
+  glimpse()
+```
+
+
+
+
+
+
+```{r}
+reliability |>
+  dplyr::select(-c(data)) |>
+  unnest(r2) |>
+  ggplot(x=study_name, y=value) +
+  geom_point() +
+  facet_wrap(~trait)
+```
+
+
+
+
+
 
 
 
