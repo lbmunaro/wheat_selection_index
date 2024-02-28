@@ -14,6 +14,8 @@ rm(list=objects()) # clean objects from workspace
 start.time <- Sys.time()
 ```
 
+## Packages
+
 ```{r}
 #| message: false
 #| warning: false
@@ -23,6 +25,9 @@ library(janitor) # Simple Tools for Examining and Cleaning Dirty Data
 library(asreml) # ASReml-R package
 ```
 
+## Raw phenotypic data
+
+### Wide
 ```{r}
 pheno_raw_w <- #raw data wide format
   read.csv('data/IL_22-23YT_02.27.24.csv', skip = 3) |> 
@@ -51,56 +56,56 @@ pheno_raw_w <- #raw data wide format
             ~ifelse(.<=0,NA,.)) |>
   glimpse()
 ```
+
+### Long
 ```{r}
 pheno_raw_l <- pheno_raw_w |> #raw data long format
   pivot_longer(cols = grain_yield_kg_ha_co_321_0001218:
                  maturity_time_spike_estimation_julian_date_jd_co_321_0501101,
                names_to = 'trait', values_to = 'value', values_drop_na = F) |>
   mutate(trait=as.factor(trait)) |>
-  
   arrange(study_name, trait, as.numeric(row_number), as.numeric(col_number)) |>
-  glimpse()
-```
-
-```{r}
-pheno_raw_l <- pheno_raw_l |>
   group_by(study_name, trait) |>
   filter(!is.na(mean(value, na.rm = TRUE))) |>
-  filter(!location_name %in% c("Blacksburg, VA", "Warsaw, VA")) |>
   ungroup() |>
   glimpse()
 ```
+### Plot raw
 
-
+#### Boxplot
 ```{r}
 pheno_raw_l |>
   ggplot(aes(x=study_name, y=value)) +
   geom_boxplot() +
   facet_wrap(~trait, scales = "free", ncol = 1)
 ```
+#### Tile plot
+```{r}
+pheno_raw_l |>
+  filter(trait=="grain_yield_kg_ha_co_321_0001218") |>
+  ggplot(aes(x=col_number,y=row_number, fill=value)) +
+  geom_tile() +
+  facet_wrap(~study_name, ncol = 2) +
+  scale_fill_viridis_c(name= "Grain yield",
+                       option = "viridis") +
+  theme_bw()
+```
 
 ## Spatial analysis
 
+ASReml options
 ```{r}
 asreml.options(gammaPar= T,
-               maxit=50,
-               pworkspace="1gb")
+               trace=F,
+               maxit=100)
 ```
 
+Toy data
 ```{r}
 dat <- pheno_raw_l |>
   filter(study_name == "YT_Urb_23",
-         trait == "plant_height_cm_co_321_0001301") |>
-  glimpse()
+         trait == "plant_height_cm_co_321_0001301")
 ```
-
-```{r}
-pheno_raw_l |>
-  ggplot(aes(x=col_number,y=row_number, fill=value)) +
-  geom_tile() +
-  facet_wrap(~study_name+trait, scales = 'free')
-```
-
 
 ### Single trial BLUP model
 
@@ -108,56 +113,111 @@ https://www.youtube.com/watch?v=Ykb6dwLk_Xw
 
 ```{r}
 mod.blup_single_trial <- function(dat) {
-  mod <- asreml(value~1+block_number,
-                random = ~idv(units) + germplasm_name,
+  mod <- asreml(value~1,
+                random = ~germplasm_name,
                 residual = ~ar1v(row_number):ar1(col_number),
                 data=dat)
   # Update model
-  mod <- update(mod)
-  # Blups
-  blups<- predict(mod, classify='germplasm_name',
-                  ignore=c('(Intercept)','block_number'))$pvals
-  # Prediction error variance
-  pev<- blups[,'std.error']^2
-  # Genetic variance
-  Vg<- summary(mod)$varcomp['germplasm_name','component']
-  # Reliability for each gen
-  rel<- 1-(pev/Vg)
-  # Mean reliability
-  m_rel<- mean(rel)
-  # Result
-  res<- data.frame(m_rel=m_rel)
+#  mod <- update(mod)
+  # Mean reliabilty
+  m_rel<- predict(mod, classify='germplasm_name',
+                  ignore=c('(Intercept)'))$pvals |>
+    as.data.frame() |>
+    mutate(pev = std.error^2,
+           Vg = summary(mod)$varcomp['germplasm_name','component'],
+           rel = 1-(pev/Vg),
+           m_rel=mean(rel)) |>
+    summarise(m_rel=mean(rel))
   # Result that will be printed
-  return(res)
+  return(m_rel)
 }
 ```
 
-
+#### Run model
 
 ```{r}
 reliability <- pheno_raw_l |>
   group_by(study_name, trait) |>
   nest() |>
   mutate(r2=map(data,~mod.blup_single_trial(.x))) |>
+  dplyr::select(-c(data)) |>
+  unnest(r2) |>
   glimpse()
 ```
 
+https://stackoverflow.com/questions/60427519/standard-error-for-random-effect-blup-of-a-mixed-effect-model-in-r
 
 
 
-
+#### Plot reliability
 
 ```{r}
 reliability |>
-  dplyr::select(-c(data)) |>
-  unnest(r2) |>
-  ggplot(x=study_name, y=value) +
+  ggplot(aes(x=study_name, y=m_rel)) +
   geom_point() +
-  facet_wrap(~trait)
+  facet_wrap(~trait, scales = "free_x") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 
+### Single trial BLUE
 
+```{r}
+mod.blue_single_trial <- function(dat) {
+  mod <- asreml(value~1 + germplasm_name,
+                residual = ~ar1v(row_number):ar1(col_number),
+                data=dat)
+  # Update model
+#  mod <- update(mod)
+  # Mean reliabilty
+  blues <- predict(mod, classify='germplasm_name', pworkspace="1gb")$pvals
+  # Result that will be printed
+  return(blues)
+}
+```
+
+#### Run model
+
+```{r}
+blues <- pheno_raw_l |>
+  group_by(study_name,trait) |>
+  nest() |>
+  mutate(blues=map(data,~mod.blue_single_trial(.x))) |>
+  dplyr::select(-data) |>
+  unnest(blues) |>
+  dplyr::select(-status) |>
+  mutate(weight = 1/(std.error^2)) |>
+  glimpse()
+```
+
+#### Boxplot
+```{r}
+blues |>
+  ggplot(aes(x=study_name, y=predicted.value)) +
+  geom_boxplot() +
+  facet_wrap(~trait, scales = "free", ncol = 1)
+```
+
+## Genotypic data
+
+```{r}
+read.csv("data/")
+```
+
+
+## Save workspace
+```{r}
+save.image("data/blues_single_trial.RData")
+```
+
+## MT-GLUP
+
+
+## End
+
+```{r}
+Sys.time() - start.time
+```
 
 
 
