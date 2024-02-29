@@ -54,6 +54,7 @@ pheno_raw_w <- #raw data wide format
   mutate_at(vars(grain_yield_kg_ha_co_321_0001218:
                    maturity_time_spike_estimation_julian_date_jd_co_321_0501101),
             ~ifelse(.<=0,NA,.)) |>
+  filter(grepl("IL", location_name)) |>
   glimpse()
 ```
 
@@ -101,7 +102,7 @@ asreml.options(gammaPar= T,
 ```
 
 Toy data
-```{r}
+```{r eval=FALSE}
 dat <- pheno_raw_l |>
   filter(study_name == "YT_Urb_23",
          trait == "plant_height_cm_co_321_0001301")
@@ -201,25 +202,63 @@ blues |>
 ## Genotypic data
 
 ```{r}
-read.csv("data/")
+geno23 <- read.csv("data/geno2023.csv", header = T) |>
+  rename(germplasm_name = X)
 ```
 
-
-## Save workspace
 ```{r}
-save.image("data/blues_single_trial.RData")
+geno23 |>
+  head(5)
 ```
 
-## MT-GLUP
+## Prepare data
 
+Subset blues with genotypic data
+```{r}
+blues_geno <- blues |>
+  ungroup() |>
+  inner_join(geno23|>dplyr::select(germplasm_name), by="germplasm_name") |>
+  mutate_if(is.character, as.factor) |>
+  glimpse()
+```
+Subset genotypic data
+```{r}
+geno23_filtered <- geno23 |>
+  filter(germplasm_name %in% unique(blues_geno$germplasm_name) | grepl("IL2022", germplasm_name)) |>
+  column_to_rownames("germplasm_name")
+geno23_filtered |> tail(6)
+```
+
+Make relationship matrix
+```{r}
+geno23_filtered_mat <- as.matrix(geno23_filtered)
+
+geno23_filtered_mat[1:5,1:5]
+```
+Relationship Matrix
+```{r}
+K <- rrBLUP::A.mat(geno23_filtered_mat)
+K[1:5,1:5]
+```
+Make K positive semidefinite
+```{r}
+K2 <- Matrix::nearPD(K)
+K2 <- K2$mat
+```
 
 ## End
 
 ```{r}
-Sys.time() - start.time
+time <- Sys.time() - start.time
+time
 ```
 
+## Save workspace to open and run in the server
+```{r}
+objects()
 
+rm(list=c("blues", "geno23", "geno23_filtered", "geno23_filtered_mat", "K",
+          "pheno_raw_l", "pheno_raw_w", "reliability", "start.time", "time"))
 
-
-
+save.image("data/blues_K.RData")
+```
