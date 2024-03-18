@@ -2,21 +2,18 @@
 
 ![](https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white)
 ![](https://img.shields.io/badge/RStudio-4285F4?style=for-the-badge&logo=rstudio&logoColor=white)
-![](uiuc.png){width=10%}
+<img src="uiuc.png" height="25">
 
 ## Optimizing winter wheat multi-trait selection for wheat-soybean double-crop systems using genomic selection index
 
 ### Authors
-Lucas Berger Munaro - lucasb4@illinois.edu
-
-![](uiuc.png){width=10%}
+- Lucas Berger Munaro <img src="uiuc.png" height="25">
 [![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lucas-berger-munaro/)
 [![](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/lbmunaro)
 [![](https://img.shields.io/badge/Google_Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.com/citations?user=4awE-QsAAAAJ&hl=en)
+lucasb4@illinois.edu
 
-Dr. Jessica Rutkoski
-
-![](uiuc.png){width=10%}
+- Dr. Jessica Rutkoski <img src="uiuc.png" height="25">
 
 ### Description
 
