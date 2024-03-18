@@ -1,15 +1,32 @@
-# Title ----
+# Single trial analysis ----
 
 # Objective ----
+# - Organize and check phenotypic data
+# - Run single trial BLUP models to check reliability
+# - Run single trial BLUE models to estimate genotype's blues
 
-# Clean workspace & track time ----
-rm(list=objects())
-start.time <- Sys.time()
+# To do next ----
+# - Try different spatial models and select the best to get the blues
+
+rm(list=objects()) # clean workspace
 
 # Packages ----
 library(tidyverse) # R packages for data science
 library(janitor) # Simple Tools for Examining and Cleaning Dirty Data
 library(asreml) # ASReml-R package
+
+# Functions ----
+# Donvert Yield to bu/acre
+convYld<- function(y){
+  x<- y/c(60 * 0.453592 * 2.47105)
+  return(x)
+}
+
+# Convert test weight to lbs/bu
+convTwt<- function(y){
+  x<- y/1000 *2.2046 *35.2391
+  return(x)
+} 
 
 # Phenotypic data ----
 
@@ -17,8 +34,8 @@ library(asreml) # ASReml-R package
 
 ### Wide format ----
 pheno_raw_w <- #raw data wide format
-  read.csv('data/IL_22-23YT_02.27.24.csv', skip = 3) |> 
-  remove_empty(which = c('cols')) |>#remove columns entirely empty
+  read.csv('data/IL_22-23YT_02.27.24.csv', skip = 3) |> # read csv file
+  remove_empty(which = c('cols')) |> #remove columns entirely empty
   clean_names() |> # clean names
   # replace location name
   mutate(study_name = str_replace(study_name,'YT_Stj_22','YT_Addie_22'),
@@ -43,6 +60,9 @@ pheno_raw_w <- #raw data wide format
          heading_time=heading_time_julian_date_jd_co_321_0001233,
          plant_height=plant_height_cm_co_321_0001301,
          maturity=maturity_time_spike_estimation_julian_date_jd_co_321_0501101) |>
+  # convert grain yield to bu/ac and test weight to lb/bu
+  mutate(grain_yield=convYld(grain_yield),
+         test_weight=convTwt(test_weight)) |>
   # arrange data by study, row, and col
   arrange(trial,row,col) |>
   # convert to factors
@@ -53,6 +73,7 @@ pheno_raw_w <- #raw data wide format
   # replace 0 by NA for response variables
   mutate_at(vars(grain_yield:maturity),
             ~ifelse(.<=0,NA,.)) |>
+  # filter trials to include only IL
   filter(grepl("IL", location)) |>
   glimpse()
 
@@ -159,11 +180,7 @@ blues <- pheno_raw_l |>
   mutate(weight = 1/(std.error^2)) |>
   glimpse()
 
-# END ----
-time <- Sys.time() - start.time
-time
-
 # Save ----
-rm("pheno_raw_l", "pheno_raw_w", "reliability", "mod.blue_single_trial", "mod.blup_single_trial", "start.time")
+rm("pheno_raw_l", "pheno_raw_w", "reliability", "mod.blue_single_trial", "mod.blup_single_trial")
 
 save.image("data/step1-BLUES.RData")
