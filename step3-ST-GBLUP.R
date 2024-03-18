@@ -1,14 +1,15 @@
-# Title ----
+# Single-trait GBLUP ----
 
 # Objective ----
+# - Run Single-trait GBLUP for each scenario
+# - Get GEBVs
+# - Calculate reliability of each model
 
-# Clean workspace & track time ----
-rm(list=objects())
-start.time <- Sys.time()
+rm(list=objects()) # clean workspace
 
 # Packages ----
 library(tidyverse) # R packages for data science
-library(asreml)
+library(asreml) # ASReml-R package
 asreml.options(maxit= 150)
 
 # Load data ----
@@ -24,50 +25,82 @@ K_22 |> glimpse()
 ### Grain yield ----
 # model
 mod_gy_22 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_22),
+                    random=~vm(germplasm, K_22)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22 |> filter(trait=="grain_yield"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_gy_22 <- predict(mod_gy_22, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_gy_22 <- predict(mod_gy_22, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_gy_22, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_gy_22)$varcomp['vm(germplasm, K_22)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### Test weight ----
 # model
 mod_tw_22 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_22),
+                    random=~vm(germplasm, K_22)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22 |> filter(trait=="test_weight"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_tw_22 <- predict(mod_tw_22, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_tw_22 <- predict(mod_tw_22, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_tw_22, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_tw_22)$varcomp['vm(germplasm, K_22)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### Heading time ----
 # model
 mod_ht_22 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_22),
+                    random=~vm(germplasm, K_22)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22 |> filter(trait=="heading_time"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_ht_22 <- predict(mod_ht_22, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_ht_22 <- predict(mod_ht_22, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_ht_22, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_ht_22)$varcomp['vm(germplasm, K_22)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### Plant height ----
 # model
 mod_ph_22 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_22),
+                    random=~vm(germplasm, K_22)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22 |> filter(trait=="plant_height"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_ph_22 <- predict(mod_ph_22, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_ph_22 <- predict(mod_ph_22, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_ph_22, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_ph_22)$varcomp['vm(germplasm, K_22)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### GEBVs ----
 # 2022 GEBVs - single-trait GBLUP
@@ -87,50 +120,82 @@ K_23 |> glimpse()
 ### Grain yield ----
 # model
 mod_gy_23 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_23),
+                    random=~vm(germplasm, K_23)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_23 |> filter(trait=="grain_yield"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_gy_23 <- predict(mod_gy_23, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_gy_23 <- predict(mod_gy_23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_gy_23, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_gy_23)$varcomp['vm(germplasm, K_23)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### Test weight ----
 # model
 mod_tw_23 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_23),
+                    random=~vm(germplasm, K_23)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_23 |> filter(trait=="test_weight"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_tw_23 <- predict(mod_tw_23, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_tw_23 <- predict(mod_tw_23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_tw_23, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_tw_23)$varcomp['vm(germplasm, K_23)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### Heading time ----
 # model
 mod_ht_23 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_23),
+                    random=~vm(germplasm, K_23)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_23 |> filter(trait=="heading_time"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_ht_23 <- predict(mod_ht_23, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_ht_23 <- predict(mod_ht_23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_ht_23, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_ht_23)$varcomp['vm(germplasm, K_23)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### Plant height ----
 # model
 mod_ph_23 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_23),
+                    random=~vm(germplasm, K_23)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_23 |> filter(trait=="plant_height"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_ph_23 <- predict(mod_ph_23, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_ph_23 <- predict(mod_ph_23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_ph_23, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_ph_23)$varcomp['vm(germplasm, K_23)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### GEBVs ----
 # 2023 GEBVs - single-trait GBLUP
@@ -150,50 +215,86 @@ K_22.23 |> glimpse()
 ### Grain yield ----
 # model
 mod_gy_22.23 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_22.23),
+                    random=~vm(germplasm, K_22.23)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22.23 |> filter(trait=="grain_yield"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_gy_22.23 <- predict(mod_gy_22.23, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_gy_22.23 <- predict(mod_gy_22.23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_gy_22.23, classify='germplasm', ignore=c('(Intercept)'),
+                          pworkspace='8gb')$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_gy_22.23)$varcomp['vm(germplasm, K_22.23)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### Test weight ----
 # model
 mod_tw_22.23 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_22.23),
+                    random=~vm(germplasm, K_22.23)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22.23 |> filter(trait=="test_weight"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_tw_22.23 <- predict(mod_tw_22.23, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_tw_22.23 <- predict(mod_tw_22.23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_tw_22.23, classify='germplasm', ignore=c('(Intercept)'),
+                          pworkspace='8gb')$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_tw_22.23)$varcomp['vm(germplasm, K_22.23)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### Heading time ----
 # model
 mod_ht_22.23 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_22.23),
+                    random=~vm(germplasm, K_22.23)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22.23 |> filter(trait=="heading_time"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_ht_22.23 <- predict(mod_ht_22.23, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_ht_22.23 <- predict(mod_ht_22.23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_ht_22.23, classify='germplasm', ignore=c('(Intercept)'),
+                          pworkspace='8gb')$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_ht_22.23)$varcomp['vm(germplasm, K_22.23)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### Plant height ----
 # model
 mod_ph_22.23 <- asreml(fixed=predicted.value~1,
-                    random=~trial+vm(germplasm, K_22.23),
+                    random=~vm(germplasm, K_22.23)+trial,
                     weights=weight,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22.23 |> filter(trait=="plant_height"), 
                     na.action = na.method(y='include', x='include'),
                     workspace="8gb")
 #gebvs
-GEBV_ph_22.23 <- predict(mod_ph_22.23, classify='germplasm', pworkspace='8gb')$pvals
+GEBV_ph_22.23 <- predict(mod_ph_22.23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+  as.data.frame() |>
+  mutate(m_rel <- predict(mod_ph_22.23, classify='germplasm', ignore=c('(Intercept)'),
+                          pworkspace='8gb')$pvals |>
+           as.data.frame() |>
+           mutate(pev = std.error^2,
+                  Vg = summary(mod_ph_22.23)$varcomp['vm(germplasm, K_22.23)','component'],
+                  rel = 1-(pev/Vg),
+                  m_rel=mean(rel)) |>
+           select(germplasm, m_rel))
 
 ### GEBVs ----
 # 2023 GEBVs - single-trait GBLUP
@@ -206,6 +307,7 @@ GEBVs_ST_GBLUP_22.23 <- data.frame() |>
 # remove individual GEBV files
 rm("GEBV_gy_22.23", "GEBV_tw_22.23", "GEBV_ht_22.23", "GEBV_ph_22.23")
 
+# Plot models ----
 # Create a loop to save all models plots in a separate folder (ST-GBLUP mod) with file name referring to the model
 object_names <- ls(pattern = "^mod_")
 
@@ -237,12 +339,8 @@ for (obj_name in object_names) {
   try(save_plot(data, obj_name), silent = TRUE)
 }
 
-# END ----
-time <- Sys.time() - start.time
-time
-
 # Save ----
-rm(list=c("start.time", "bluesG_22", "bluesG_23", "bluesG_22.23", "K_22", "K_23", "K_22.23",
-          "object_names"))
+rm(list=c(ls(pattern = "^bluesG_"), ls(pattern = "^K_"), ls(pattern = "^check_"),
+          "object_names", "obj_name", "save_plot", "data"))
 
 save.image("data/step3-ST-GBLUP.RData")
