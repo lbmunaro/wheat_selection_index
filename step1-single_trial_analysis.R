@@ -16,7 +16,7 @@ library(janitor) # Simple Tools for Examining and Cleaning Dirty Data
 library(asreml) # ASReml-R package
 
 # Functions ----
-# Donvert Yield to bu/acre
+# Convert Yield to bu/acre
 convYld<- function(y){
   x<- y/c(60 * 0.453592 * 2.47105)
   return(x)
@@ -74,7 +74,7 @@ pheno_raw_w <- #raw data wide format
   mutate_at(vars(grain_yield:maturity),
             ~ifelse(.<=0,NA,.)) |>
   # filter trials to include only IL
-  filter(grepl("IL", location)) |>
+  filter(grepl('IL', location)) |>
   glimpse()
 
 ### Long format ----
@@ -94,16 +94,16 @@ pheno_raw_l <- pheno_raw_w |> #raw data long format
 pheno_raw_l |>
   ggplot(aes(x=trial, y=value)) +
   geom_boxplot() +
-  facet_wrap(~trait, scales = "free", ncol = 1)
+  facet_wrap(~trait, scales = 'free', ncol = 1)
 
 #### Tile plot ----
 pheno_raw_l |>
-  filter(trait=="grain_yield") |>
+  filter(trait=='grain_yield') |>
   ggplot(aes(x=col,y=row, fill=value)) +
   geom_tile() +
   facet_wrap(~trial, ncol = 2) +
-  scale_fill_viridis_c(name= "Grain yield",
-                       option = "viridis") +
+  scale_fill_viridis_c(name= 'Grain yield',
+                       option = 'viridis') +
   theme_bw()
 
 # BLUP - single trial ----
@@ -119,7 +119,7 @@ mod.blup_single_trial <- function(dat) {
   mod <- asreml(value~1,
                 random = ~germplasm,
                 residual = ~ar1v(row):ar1(col),
-                data=dat)
+                data=dat, maxit = 50)
   # Update model
   mod <- update(mod)
   # Mean reliabilty
@@ -148,7 +148,7 @@ reliability <- pheno_raw_l |>
 reliability |>
   ggplot(aes(x=trial, y=m_rel)) +
   geom_point() +
-  facet_wrap(~trait, scales = "free_x") +
+  facet_wrap(~trait, scales = 'free_x') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 # BLUE - single trial ----
@@ -158,11 +158,11 @@ reliability |>
 mod.blue_single_trial <- function(dat) {
   mod <- asreml(value~1 + germplasm,
                 residual = ~ar1v(row):ar1(col),
-                data=dat)
+                data=dat, maxit = 50)
   # Update model
   mod <- update(mod)
   # Mean reliabilty
-  blues <- predict(mod, classify='germplasm', pworkspace="1gb")$pvals
+  blues <- predict(mod, classify='germplasm', pworkspace='1gb')$pvals
   # Result that will be printed
   return(blues)
 }
@@ -181,6 +181,6 @@ blues <- pheno_raw_l |>
   glimpse()
 
 # Save ----
-rm("pheno_raw_l", "pheno_raw_w", "reliability", "mod.blue_single_trial", "mod.blup_single_trial")
+rm('pheno_raw_l', 'pheno_raw_w', 'reliability', 'mod.blue_single_trial', 'mod.blup_single_trial')
 
-save.image("data/step1-BLUES.RData")
+save.image('data/step1-BLUES.RData')
