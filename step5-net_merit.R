@@ -11,21 +11,21 @@ library(tidyverse) # R packages for data science
 
 # Load data ----
 ## ST-GBLUP
-load("data/step3-ST-GBLUP.RData")
+load('data/step3-ST-GBLUP.RData')
 ## MT-GBLUP ----
-load("data/step4-MT-GBLUP.RData")
+load('data/step4-MT-GBLUP.RData')
 
 # remove unnecessary data
-rm(list = c(ls(pattern = "^mod_")))
+rm(list = c(ls(pattern = '^mod_')))
 
 # Create a single data set with all scenarios
 GEBVs <- data.frame() |>
-  bind_rows(GEBVs_ST_GBLUP_22 |> mutate(scenario="ST_GBLUP_22"),
-            GEBVs_ST_GBLUP_23 |> mutate(scenario="ST_GBLUP_23"),
-            GEBVs_ST_GBLUP_22.23 |> mutate(scenario="ST_GBLUP_22.23"),
-            GEBVs_MT_GBLUP_22 |> mutate(scenario="MT_GBLUP_22"),
-            GEBVs_MT_GBLUP_23 |> mutate(scenario="MT_GBLUP_23"),
-            GEBVs_MT_GBLUP_22.23 |> mutate(scenario="MT_GBLUP_22.23")) |>
+  bind_rows(GEBVs_ST_GBLUP_22 |> mutate(scenario='ST_GBLUP_22'),
+            GEBVs_ST_GBLUP_23 |> mutate(scenario='ST_GBLUP_23'),
+            GEBVs_ST_GBLUP_22.23 |> mutate(scenario='ST_GBLUP_22.23'),
+            GEBVs_MT_GBLUP_22 |> mutate(scenario='MT_GBLUP_22'),
+            GEBVs_MT_GBLUP_23 |> mutate(scenario='MT_GBLUP_23'),
+            GEBVs_MT_GBLUP_22.23 |> mutate(scenario='MT_GBLUP_22.23')) |>
   rename(gebv=predicted.value) |>
   select(scenario, trait, germplasm, gebv) |>
   pivot_wider(names_from = trait, values_from = gebv) |>
@@ -63,4 +63,4 @@ GEBVs_NetMerit <- GEBVs |>
                             wheat_price0, soybean_price)) |>
   glimpse()
 
-write.csv(GEBVs_NetMerit,"data/net_merit.csv", row.names = F)
+write.csv(GEBVs_NetMerit,'data/net_merit.csv', row.names = F)
