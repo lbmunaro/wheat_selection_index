@@ -1,21 +1,33 @@
-## IL wheat area map
+# Illinois wheat area map ----
+# Supplementary script
+
+# Objective ----
+# - Create a map showing the wheat cultivated area per IL county
+# - Plot the trial locations
+
+rm(list=objects()) # clean workspace
+
+# Packages ----
+
+library(tidyverse) # R packages for data science
 library(sf) # Simple Features for R
 library(raster) # Geographic Data Analysis and Modeling
 library(ggspatial) # Spatial Data Framework for ggplot2
 library(RColorBrewer) # ColorBrewer Palettes
 
+# Trial locations ----
 loc_coord <- data.frame(loc=c("Blv", "Neo", "Addie", "Stp", "Urb"),
                         lat=c(38.5184055,39.23274,38.415655,38.8712128,40.05833),
                         long=c(-89.8401323,-88.38207,-89.463842,-88.8825766,-88.22937)) |>
   glimpse()
 
-
+## IL wheat area map
 # Data for the states
 states <- c("illinois")
 highlight_states <- c("illinois")
 
 # Get the map data for the specified states
-map_data <- map_data("state") %>%
+map_data <- map_data("state") |>
   filter(region %in% states)
 county <- map_data("county") |>
   filter(region %in% states) |>
@@ -47,9 +59,7 @@ county_ac <- county |>
   mutate(classes = cut(Planted.Acres, breaks=breaks, labels = labels, include.lowest = TRUE, right = FALSE)) |>
   glimpse()
 
-### Plot
-
-
+### Plot ----
 ggplot() +
   geom_polygon(data = county_ac, aes(x = long, y = lat, group = group, fill = classes), color = "gray70") +
   scale_fill_brewer(name = "Planted acres", palette = "Oranges", na.value = "white", drop= TRUE, 
