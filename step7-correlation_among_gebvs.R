@@ -11,7 +11,7 @@ library(tidyverse) # R packages for data science
 
 # Load data ----
 ## GEBVs & Net merit ----
-NET_MERIT <- read.csv("data/net_merit.csv") |>
+NET_MERIT <- read.csv('data/net_merit.csv') |>
   mutate_if(is.character, as.factor) |>
   glimpse()
 
@@ -23,11 +23,11 @@ calculate_correlation <- function(data, vars) {
   return(correlation_matrix)
 }
 
-vars <- c("grain_yield", "test_weight", "heading_time", "plant_height", "net_merit")
+vars <- c('grain_yield', 'test_weight', 'heading_time', 'plant_height', 'net_merit')
 
 # MT-GBLUP
 MT_GBLUP <- NET_MERIT |>
-  filter(scenario%in%"MT_GBLUP_22.23") |>
+  filter(scenario%in%'MT_GBLUP_22.23') |>
   glimpse()
 
 # Calculate correlation
@@ -36,7 +36,7 @@ correlation_result_MT_BLUP
 
 #ST-GBLUP
 ST_GBLUP <- NET_MERIT |>
-  filter(scenario%in%"ST_GBLUP_22.23") |>
+  filter(scenario%in%'ST_GBLUP_22.23') |>
   glimpse()
 
 # Calculate correlation
@@ -68,7 +68,7 @@ merged_correlation <- merge_correlation_matrices(correlation_result_MT_BLUP, cor
 print(merged_correlation)
 
 # Define trait names
-trait_names <- c("Grain yield", "Test weight", "Heading time", "Plant height", "Net merit")
+trait_names <- c('Grain yield', 'Test weight', 'Heading time', 'Plant height', 'Net merit')
 
 # Assign trait names to row and column names
 dimnames(merged_correlation) <- list(trait_names, trait_names)
@@ -78,13 +78,9 @@ merged_correlation
 
 library(corrplot)
 
-corrplot.mixed(merged_correlation, upper="pie", lower="pie")
-
-corrplot.mixed(merged_correlation, upper = "pie", lower = "pie",  bg = list(upper = "lightblue", lower = "pink"))
-
-png("figures/correlation_gebvs.png", width = 6, height = 4, units = "in", res = 320)
-corrplot.mixed(merged_correlation, upper = "pie", lower = "pie",
-               number.cex = 1.2, number.digits = 2, addCoef.col = "gray50",
-               tl.col = "black", tl.cex = 0.75,
-               upper.col = "#13294B", lower.col = "#FF552E")
+png('figures/correlation_gebvs.png', width = 6, height = 4, units = 'in', res = 320)
+corrplot.mixed(merged_correlation, upper = 'pie', lower = 'pie',
+               number.cex = 1.2, number.digits = 2, addCoef.col = 'gray50',
+               tl.col = 'black', tl.cex = 0.75,
+               upper.col = '#13294B', lower.col = '#FF552E')
 dev.off()
