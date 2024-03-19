@@ -1,12 +1,17 @@
+# Illinois wheat area map ----
+# Supplementary script
+
+# Objective ----
+# - Plot a trial
+
 rm(list=objects()) # clean workspace
 
 # Packages ----
 library(tidyverse) # R packages for data science
 library(janitor) # Simple Tools for Examining and Cleaning Dirty Data
-library(asreml) # ASReml-R package
 
 # Functions ----
-# Donvert Yield to bu/acre
+# Convert Yield to bu/acre
 convYld<- function(y){
   x<- y/c(60 * 0.453592 * 2.47105)
   return(x)
@@ -83,8 +88,6 @@ YT_Urb_23 <- pheno_raw_w |>
   filter(trial=="YT_Neo_23") |>
   glimpse()
 
-
-
 #### Tile plot ----
 YT_Urb_23 |>
   ggplot(aes(x=col,y=row, fill=rep)) +
@@ -102,7 +105,7 @@ sparse <- pheno_raw_w |>
   mutate(Rep=n()) |>
   mutate(Rep=as.factor(Rep)) |>
   mutate(location=fct_relevel(location,c("Urbana, IL", "Neoga, IL", "St Peter, IL",
-                                   "Addieville, IL", "Belleville, IL"))) |>
+                                         "Addieville, IL", "Belleville, IL"))) |>
   glimpse()
 
 ggplot(sparse, aes(x=germplasm, y=location)) +
