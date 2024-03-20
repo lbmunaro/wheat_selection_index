@@ -1,7 +1,7 @@
 # Multi-trait GBLUP ----
 
 # Objective ----
-# - Run Multi-trait GBLUP 
+# - Run Multi-trait GBLUP using the combination of trait and trial as groups
 # - Get GEBVs
 
 rm(list=objects()) # clean workspace
