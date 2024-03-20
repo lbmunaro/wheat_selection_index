@@ -31,7 +31,7 @@ mod_gy_22 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_gy_22 <- predict(mod_gy_22, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_gy_22 <- predict(mod_gy_22, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_gy_22, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
            as.data.frame() |>
@@ -51,7 +51,7 @@ mod_tw_22 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_tw_22 <- predict(mod_tw_22, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_tw_22 <- predict(mod_tw_22, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_tw_22, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
            as.data.frame() |>
@@ -71,7 +71,7 @@ mod_ht_22 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_ht_22 <- predict(mod_ht_22, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_ht_22 <- predict(mod_ht_22, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_ht_22, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
            as.data.frame() |>
@@ -91,7 +91,7 @@ mod_ph_22 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_ph_22 <- predict(mod_ph_22, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_ph_22 <- predict(mod_ph_22, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_ph_22, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
            as.data.frame() |>
@@ -126,7 +126,7 @@ mod_gy_23 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_gy_23 <- predict(mod_gy_23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_gy_23 <- predict(mod_gy_23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_gy_23, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
            as.data.frame() |>
@@ -146,7 +146,7 @@ mod_tw_23 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_tw_23 <- predict(mod_tw_23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_tw_23 <- predict(mod_tw_23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_tw_23, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
            as.data.frame() |>
@@ -166,7 +166,7 @@ mod_ht_23 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_ht_23 <- predict(mod_ht_23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_ht_23 <- predict(mod_ht_23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_ht_23, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
            as.data.frame() |>
@@ -186,7 +186,7 @@ mod_ph_23 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_ph_23 <- predict(mod_ph_23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_ph_23 <- predict(mod_ph_23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_ph_23, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
            as.data.frame() |>
@@ -221,7 +221,7 @@ mod_gy_22.23 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_gy_22.23 <- predict(mod_gy_22.23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_gy_22.23 <- predict(mod_gy_22.23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_gy_22.23, classify='germplasm', ignore=c('(Intercept)'),
                           pworkspace='8gb')$pvals |>
@@ -242,7 +242,7 @@ mod_tw_22.23 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_tw_22.23 <- predict(mod_tw_22.23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_tw_22.23 <- predict(mod_tw_22.23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_tw_22.23, classify='germplasm', ignore=c('(Intercept)'),
                           pworkspace='8gb')$pvals |>
@@ -263,7 +263,7 @@ mod_ht_22.23 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_ht_22.23 <- predict(mod_ht_22.23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_ht_22.23 <- predict(mod_ht_22.23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_ht_22.23, classify='germplasm', ignore=c('(Intercept)'),
                           pworkspace='8gb')$pvals |>
@@ -284,7 +284,7 @@ mod_ph_22.23 <- asreml(fixed=predicted.value~1,
                     na.action = na.method(y='include', x='include'),
                     workspace='8gb', maxit= 50)
 #gebvs
-GEBV_ph_22.23 <- predict(mod_ph_22.23, classify='germplasm', ignore=c('trial'), pworkspace='8gb')$pvals |>
+GEBV_ph_22.23 <- predict(mod_ph_22.23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
   mutate(m_rel <- predict(mod_ph_22.23, classify='germplasm', ignore=c('(Intercept)'),
                           pworkspace='8gb')$pvals |>
@@ -306,40 +306,7 @@ GEBVs_ST_GBLUP_22.23 <- data.frame() |>
 # remove individual GEBV files
 rm('GEBV_gy_22.23', 'GEBV_tw_22.23', 'GEBV_ht_22.23', 'GEBV_ph_22.23')
 
-# Plot models ----
-# Create a loop to save all models plots in a separate folder (ST-GBLUP mod) with file name referring to the model
-object_names <- ls(pattern = '^mod_')
-
-# Create a function to save plots
-save_plot <- function(data, obj_name) {
-  # Apply the plot() function
-  plot(data)  # Adjust this line according to your plot function
-  # Save the plot with the same name as the object in the specified folder
-  plot_dir <- '~/Documents/wheat_selection_index/plot_mod/ST-GBLUP/'  # Update this path with the absolute path
-  # Create the directory if it doesn't exist
-  if (!dir.exists(plot_dir)) {
-    if (!dir.create(plot_dir, recursive = TRUE)) {
-      stop('Failed to create directory:', plot_dir)
-    }
-  }
-  plot_name <- paste0(plot_dir, obj_name, '.png')
-  # Save the plot as a PNG file
-  if (!try(png(plot_name), silent = TRUE)) {
-    stop('Failed to save plot:', plot_name)
-  }
-  dev.off()
-}
-
-# Iterate over each object
-for (obj_name in object_names) {
-  # Extract the object
-  data <- get(obj_name)
-  # Save the plot
-  try(save_plot(data, obj_name), silent = TRUE)
-}
-
 # Save ----
-rm(list=c(ls(pattern = '^bluesG_'), ls(pattern = '^K_'), ls(pattern = '^check_'),
-          'object_names', 'obj_name', 'save_plot', 'data'))
+rm(list=c(ls(pattern = '^bluesG_'), ls(pattern = '^K_'), ls(pattern = '^check_')))
 
 save.image('data/step3-ST-GBLUP.RData')
