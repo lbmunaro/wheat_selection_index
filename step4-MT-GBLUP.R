@@ -28,7 +28,7 @@ K_22 |> glimpse()
 #model
 mod_MT_GBLUP_22 <- asreml(fixed = predicted.value~trait,
                           random = ~corgh(trait):vm(germplasm, K_22) + trial,
-                          weights = weight, data = bluesG_22,
+                          weights = weight, asmv = trait, data = bluesG_22,
                           family=asr_gaussian(dispersion = 1),
                           na.action = na.method(y='include', x='include'),
                           workspace = '32gb')
@@ -46,7 +46,7 @@ K_23 |> glimpse()
 #model
 mod_MT_GBLUP_23 <- asreml(fixed = predicted.value~trait,
                           random = ~corgh(trait):vm(germplasm, K_23) + trial,
-                          weights = weight, data = bluesG_23,
+                          weights = weight, asmv = trait, data = bluesG_23,
                           family=asr_gaussian(dispersion = 1),
                           na.action = na.method(y='include', x='include'),
                           workspace = '32gb')
@@ -64,7 +64,7 @@ K_22.23 |> glimpse()
 #model
 mod_MT_GBLUP_22.23 <- asreml(fixed = predicted.value~trait,
                              random = ~corgh(trait):vm(germplasm, K_22.23) + trial,
-                             weights = weight, data = bluesG_22.23,
+                             weights = weight, asmv = trait, data = bluesG_22.23,
                              family=asr_gaussian(dispersion = 1),
                              na.action = na.method(y='include', x='include'),
                              workspace = '32gb')
