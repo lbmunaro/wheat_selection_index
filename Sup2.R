@@ -9,6 +9,7 @@ rm(list=objects()) # clean workspace
 # Packages ----
 library(tidyverse) # R packages for data science
 library(janitor) # Simple Tools for Examining and Cleaning Dirty Data
+library(forcats)
 
 # Functions ----
 # Convert Yield to bu/acre
@@ -85,7 +86,7 @@ pheno_raw_l <- pheno_raw_w |> #raw data long format
 
 ### Plot data ----
 YT_Urb_23 <- pheno_raw_w |>
-  filter(trial=="YT_Neo_23") |>
+  filter(trial=="YT_Urb_23") |>
   glimpse()
 
 #### Tile plot ----
@@ -113,6 +114,8 @@ ggplot(sparse, aes(x=germplasm, y=location)) +
   scale_fill_manual(values=c("1"="#FF5F05","2"="#13294B")) +
   xlab("Genotype") + ylab("Location") +
   theme_minimal() +
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
-ggsave("figures/sparse.png",width = 6,height = 2.5, dpi = 320)
+  theme(axis.text.x = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        text = element_text(size = 16))
+ggsave("figures/sparse.png",width = 12,height = 3, dpi = 320)
