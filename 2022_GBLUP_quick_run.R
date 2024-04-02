@@ -35,5 +35,7 @@ mod_MT_GBLUP_22_group <- asreml(fixed = predicted.value~group,
 mod_MT_GBLUP_22_group <- update.asreml(mod_MT_GBLUP_22_group)
 
 # Save the model
-saveRDS(mod_MT_GBLUP_22_group, file = 'mod_MT_GBLUP_22_group.RDS')
+saveRDS(mod_MT_GBLUP_22_group, file = 'data/mod_MT_GBLUP_22_group.RDS')
+
+save.image('data/mod_MT_GBLUP_22_group.RData')
 
