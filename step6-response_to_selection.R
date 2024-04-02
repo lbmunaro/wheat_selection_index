@@ -80,7 +80,7 @@ RESP_SEL |>
   scale_fill_manual('Model/Selection criteria', values = colors_full,
                     label=c('MT-GBLUP/Net merit','MT-GBLUP/Grain yield',
                             'ST-GBLUP/Net merit','ST-GBLUP/Grain yield')) +
-  xlab('Data set') + ylab('Response to selection') +
+  xlab('Data set') + ylab('Expected response to selection') +
   theme_bw() +
   theme(panel.grid = element_blank(),
         legend.position = c(0.75,0.15))
@@ -94,17 +94,19 @@ RESP_SEL |> filter(dataset=='Combined') |>
   ggplot(aes(x=model, y=RespSel)) +
   geom_bar(aes(fill=criteria), 
            stat = 'identity', position = 'dodge') +
-  facet_wrap(~trait, scales='free', ncol = 2,
+  facet_wrap(~trait, scales='free', ncol = 3,
              labeller = labeller(trait = c('net.merit' = 'Net merit (USD)',
                                            'grain.yield' ='Grain yield (bu/ac)',
                                            'heading.time' = 'Heading time (days)',
                                            'test.weight' = 'Test weight (lb/bu)',
                                            'plant.height' = 'Plant height (cm)'))) +
   scale_fill_manual('Selection criteria', label=c('Net merit','Grain yield'),values = colors_summary) +
-  xlab(NULL) + ylab('Response to selection') +
+  xlab(NULL) + ylab('Expected response to selection') +
   theme_bw() +
   theme(panel.grid = element_blank(),
-        legend.position = c(0.75,0.15))
+        legend.position = c(0.85,0.25),
+        text = element_text(size = 16))
+ggsave('figures/RespSel_summary.png', width = 8, height = 5, units = 'in', dpi=320)
 
 # Save ----
 
