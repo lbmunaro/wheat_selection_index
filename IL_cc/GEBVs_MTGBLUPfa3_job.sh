@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-#SBATCH --time=48:05:00                    # Job run time (hh:mm:ss)
+#SBATCH --time=04:00:00                    # Job run time (hh:mm:ss)
 #SBATCH --nodes=1                          # Number of nodes
 #SBATCH --ntasks-per-node=16               # Number of task (cores/ppn) per node
 #SBATCH --job-name=GEBVs_MTGBLUPfa3_job    # Name of batch job
