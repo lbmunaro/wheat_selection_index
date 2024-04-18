@@ -119,9 +119,12 @@ mod.blup_single_trial <- function(dat) {
   mod <- asreml(value~1,
                 random = ~germplasm,
                 residual = ~ar1v(row):ar1(col),
-                data=dat, maxit = 50)
+                data=dat, maxit = 20)
   # Update model
-  mod <- update(mod)
+  mod <- update.asreml(mod)
+  mod <- update.asreml(mod)
+  mod <- update.asreml(mod)
+  mod <- update.asreml(mod)
   # Mean reliabilty
   m_rel<- predict(mod, classify='germplasm', ignore=c('(Intercept)'))$pvals |>
     as.data.frame() |>
@@ -158,10 +161,13 @@ reliability |>
 mod.blue_single_trial <- function(dat) {
   mod <- asreml(value~1 + germplasm,
                 residual = ~ar1v(row):ar1(col),
-                data=dat, maxit = 50)
+                data=dat, maxit = 20)
   # Update model
-  mod <- update(mod)
-  # Mean reliabilty
+  mod <- update.asreml(mod)
+  mod <- update.asreml(mod)
+  mod <- update.asreml(mod)
+  mod <- update.asreml(mod)
+  # Mean reliability
   blues <- predict(mod, classify='germplasm', pworkspace='1gb')$pvals
   # Result that will be printed
   return(blues)
@@ -169,7 +175,7 @@ mod.blue_single_trial <- function(dat) {
 
 ## Run BLUE ----
 
-# Use map() to run model for each individual trial and return indivudual genotype's blues, SE, and weight
+# Use map() to run model for each individual trial and return individual genotype's blues, SE, and weight
 blues <- pheno_raw_l |>
   group_by(trial,trait) |>
   nest() |>
@@ -181,6 +187,4 @@ blues <- pheno_raw_l |>
   glimpse()
 
 # Save ----
-rm('pheno_raw_l', 'pheno_raw_w', 'reliability', 'mod.blue_single_trial', 'mod.blup_single_trial')
-
-save.image('data/step1-BLUES.RData')
+saveRDS(blues, file = 'data/single_trial_blues.RDS')

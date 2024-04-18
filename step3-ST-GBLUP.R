@@ -15,6 +15,7 @@ library(asreml) # ASReml-R package
 ## BLUES & K2 ----
 load('data/step2-subBLUES_K2.RData')
 
+
 # ST-GBLUP ----
 
 ## 2022 ----
@@ -29,7 +30,10 @@ mod_gy_22 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22 |> filter(trait=='grain_yield'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_gy_22 <- update.asreml(mod_gy_22)
+mod_gy_22 <- update.asreml(mod_gy_22)
+mod_gy_22 <- update.asreml(mod_gy_22)
 #gebvs
 GEBV_gy_22 <- predict(mod_gy_22, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -49,7 +53,10 @@ mod_tw_22 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22 |> filter(trait=='test_weight'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_tw_22 <- update.asreml(mod_tw_22)
+mod_tw_22 <- update.asreml(mod_tw_22)
+mod_tw_22 <- update.asreml(mod_tw_22)
 #gebvs
 GEBV_tw_22 <- predict(mod_tw_22, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -69,7 +76,10 @@ mod_ht_22 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22 |> filter(trait=='heading_time'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_ht_22 <- update.asreml(mod_ht_22)
+mod_ht_22 <- update.asreml(mod_ht_22)
+mod_ht_22 <- update.asreml(mod_ht_22)
 #gebvs
 GEBV_ht_22 <- predict(mod_ht_22, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -89,7 +99,10 @@ mod_ph_22 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22 |> filter(trait=='plant_height'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_ph_22 <- update.asreml(mod_ph_22)
+mod_ph_22 <- update.asreml(mod_ph_22)
+mod_ph_22 <- update.asreml(mod_ph_22)
 #gebvs
 GEBV_ph_22 <- predict(mod_ph_22, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -124,7 +137,11 @@ mod_gy_23 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_23 |> filter(trait=='grain_yield'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_gy_23 <- update.asreml(mod_gy_23)
+mod_gy_23 <- update.asreml(mod_gy_23)
+mod_gy_23 <- update.asreml(mod_gy_23)
+
 #gebvs
 GEBV_gy_23 <- predict(mod_gy_23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -144,7 +161,11 @@ mod_tw_23 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_23 |> filter(trait=='test_weight'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_tw_23 <- update.asreml(mod_tw_23)
+mod_tw_23 <- update.asreml(mod_tw_23)
+mod_tw_23 <- update.asreml(mod_tw_23)
+
 #gebvs
 GEBV_tw_23 <- predict(mod_tw_23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -164,7 +185,11 @@ mod_ht_23 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_23 |> filter(trait=='heading_time'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_ht_23 <- update.asreml(mod_ht_23)
+mod_ht_23 <- update.asreml(mod_ht_23)
+mod_ht_23 <- update.asreml(mod_ht_23)
+
 #gebvs
 GEBV_ht_23 <- predict(mod_ht_23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -184,7 +209,11 @@ mod_ph_23 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_23 |> filter(trait=='plant_height'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_ph_23 <- update.asreml(mod_ph_23)
+mod_ph_23 <- update.asreml(mod_ph_23)
+mod_ph_23 <- update.asreml(mod_ph_23)
+
 #gebvs
 GEBV_ph_23 <- predict(mod_ph_23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -219,7 +248,11 @@ mod_gy_22.23 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22.23 |> filter(trait=='grain_yield'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_gy_22.23 <- update.asreml(mod_gy_22.23)
+mod_gy_22.23 <- update.asreml(mod_gy_22.23)
+mod_gy_22.23 <- update.asreml(mod_gy_22.23)
+
 #gebvs
 GEBV_gy_22.23 <- predict(mod_gy_22.23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -240,7 +273,11 @@ mod_tw_22.23 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22.23 |> filter(trait=='test_weight'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_tw_22.23 <- update.asreml(mod_tw_22.23)
+mod_tw_22.23 <- update.asreml(mod_tw_22.23)
+mod_tw_22.23 <- update.asreml(mod_tw_22.23)
+
 #gebvs
 GEBV_tw_22.23 <- predict(mod_tw_22.23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -261,7 +298,11 @@ mod_ht_22.23 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22.23 |> filter(trait=='heading_time'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_ht_22.23 <- update.asreml(mod_ht_22.23)
+mod_ht_22.23 <- update.asreml(mod_ht_22.23)
+mod_ht_22.23 <- update.asreml(mod_ht_22.23)
+
 #gebvs
 GEBV_ht_22.23 <- predict(mod_ht_22.23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>
@@ -282,7 +323,11 @@ mod_ph_22.23 <- asreml(fixed=predicted.value~1,
                     family=asr_gaussian(dispersion = 1),
                     data=bluesG_22.23 |> filter(trait=='plant_height'), 
                     na.action = na.method(y='include', x='include'),
-                    workspace='8gb', maxit= 50)
+                    workspace='8gb', maxit= 20)
+mod_ph_22.23 <- update.asreml(mod_ph_22.23)
+mod_ph_22.23 <- update.asreml(mod_ph_22.23)
+mod_ph_22.23 <- update.asreml(mod_ph_22.23)
+
 #gebvs
 GEBV_ph_22.23 <- predict(mod_ph_22.23, classify='germplasm', pworkspace='8gb')$pvals |>
   as.data.frame() |>

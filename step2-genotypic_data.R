@@ -15,7 +15,7 @@ library(ASRgenomics) # R package for Genomic Selection Analysis in R
 
 # Load data ----
 ## BLUES ----
-load('data/step1-BLUES.RData')
+blues <- readRDS('data/single_trial_blues.RDS')
 
 ## Genotypic data ----
 geno <- read.csv('data/geno2023.csv', header = T) |>
